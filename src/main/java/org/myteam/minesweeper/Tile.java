@@ -22,6 +22,17 @@ public abstract class Tile {
         }
     }
 
+    public void toggleFlag(Board board, Game game) {  // actual toggleFlag
+        if (!revealed && !flagged) {
+            flagged = true;
+            game.decreaseFlagsLeft();
+        }
+        else if (flagged) {
+            flagged = false;
+            game.increaseFlagsLeft();
+        }
+    }
+
     public abstract void open(Board board, Game game);
 
     public boolean isFlagged() {
