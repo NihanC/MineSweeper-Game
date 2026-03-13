@@ -1,6 +1,5 @@
 package org.myteam.minesweeper;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 public class Board {
     private Tile[][] grid;
@@ -12,26 +11,26 @@ public class Board {
     private int colNum;
 
 
-    public Board(Level){
+    public Board(Level level){
         this.minedTiles = new ArrayList<>();
-        rowNum = Level.getRows();
-        colNum = Level.getCols();
-        nrOfMines = Level.getMines();
+        rowNum = level.getRows();
+        colNum = level.getCols();
+        nrOfMines = level.getMines();
         grid = new Tile[rowNum][colNum];
-        generate(Level);
+        generate(level);
     }
 
-    public void click(boolean rightClick,int row, int col){
+    public void click(boolean rightClick,int row, int col, Game game){
         if(!rightClick){
             if(firstTile){
                 first = grid[row][col];
                 populate();
-                first.open(Board board, Game game); //method from Tile class
+                first.open(this, game); //method from Tile class
                 firstTile = false;
             }
             else{
                 Tile leftClickedTile = grid[row][col];
-                leftClickedTile.open();
+                leftClickedTile.open(this, game);
             }
         }
         else{
@@ -41,7 +40,7 @@ public class Board {
     }
 
     //only activated when there is newGame(); creates an emptyTile Board
-    public void generate(Level){
+    public void generate(Level level){
             firstTile = true;
             for(int i=0; i<rowNum; i++){
                 for(int j=0; j<colNum; j++){
