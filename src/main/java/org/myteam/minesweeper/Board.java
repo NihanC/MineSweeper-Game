@@ -80,10 +80,11 @@ public class Board {
             grid[i][j] = Mine;}
     }
 
-    public Tile[] getGrid(){return grid;}
+    public static Tile[] getGrid(){return grid;}
     public boolean getFirstTile(){return firstTile;}
     public int getNrOfMines(){return nrOfMines;}
     public Tile getFirst() {return first;}
     public int getRowNum(){return rowNum;}
     public int getColNum(){return colNum;}
+    public ArrayList<Tile> getMinedTiles(){return minedTiles;}
 }
