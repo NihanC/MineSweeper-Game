@@ -1,6 +1,7 @@
 package org.myteam.minesweeper;
 
 public class NumberTile extends Tile {
+    private Board board;
     private int adjMines = 0;
     private int value;
     public NumberTile(int r, int c) {
@@ -9,11 +10,10 @@ public class NumberTile extends Tile {
         value = adjMines;
     }
 
-    public int calculateAdjMines(){
-        for(int i=row-1; i<(row+2); i++){
-            for(int j =column-1; j<(column+2); j++){
-                grid = Board.getGrid();
-                if((Board.isInMinedTiles(i,j))&&!((i==row)&&(j==column)){
+    public void calculateAdjMines(){
+        for(int i=Math.max(0, row-1); i<Math.min(board.getRowNum(), row+2); i++){
+            for(int j =Math.max(0, column-1); j<Math.max(board.getColNum(), column-2); j++){
+                if((board.isInMinedTiles(i,j))&&!((i==row)&&(j==column))){
                     adjMines ++;
                 }
             }

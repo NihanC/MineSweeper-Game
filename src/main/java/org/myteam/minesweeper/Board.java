@@ -12,23 +12,13 @@ public class Board {
     private int colNum;
 
 
-    public Board(level){
+    public Board(Level){
+        this.minedTiles = new ArrayList<>();
+        rowNum = Level.getRows();
+        colNum = Level.getCols();
+        nrOfMines = Level.getMines();
         grid = new Tile[rowNum][colNum];
-        ArrayList<Tile> minedTiles = new ArrayList<>();
-        if(level = "easy"){
-            rowNum = 4;
-            colNum = 4;
-        }
-        else if(level = "medium"){
-            rowNum = 8;
-            colNum = 10;
-        }
-        else{
-            rowNum = 16;
-            colNum = 16;
-        }
-        generate(String level);
-        firstTile = true;
+        generate(Level);
     }
 
     public void click(boolean rightClick,int row, int col){
@@ -36,7 +26,7 @@ public class Board {
             if(firstTile){
                 first = grid[row][col];
                 populate();
-                first.open(); //method from Tile class
+                first.open(Board board, Game game); //method from Tile class
                 firstTile = false;
             }
             else{
@@ -51,36 +41,36 @@ public class Board {
     }
 
     //only activated when there is newGame(); creates an emptyTile Board
-    public void generate(String level){
+    public void generate(Level){
             firstTile = true;
             for(int i=0; i<rowNum; i++){
                 for(int j=0; j<colNum; j++){
-                    grid[i][j]= EmptyTile;
+                    grid[i][j]= new EmptyTile(i, j);
                 }
             }
     }
 
     public boolean isInMinedTiles(int r, int c){
-        if(grid[r][c] == Mine){
+        if(grid[r][c] instanceof Mine){
             return true;
         }
         return false;
     }
 
     public void populate(){
-        Random r= new Random();
-        int i = r.nextInt(rowNum);
-        int j = r.nextInt(colNum);//if bound is 100, 100 is not included. from 0 to 99
+        Random r= new Random();//if bound is 100, 100 is not included. from 0 to 99
 
         for(int mineGenerated=0; mineGenerated<nrOfMines; mineGenerated++){
+            int i = r.nextInt(rowNum);
+            int j = r.nextInt(colNum);
             while((grid[i][j]==first)||(isInMinedTiles(i,j))) {
                     i = r.nextInt(rowNum);
                     j = r.nextInt(colNum);
                 }
-            grid[i][j] = Mine;}
+            grid[i][j] = new Mine(i,j);}
     }
 
-    public static Tile[] getGrid(){return grid;}
+    public Tile[][] getGrid(){return grid;}
     public boolean getFirstTile(){return firstTile;}
     public int getNrOfMines(){return nrOfMines;}
     public Tile getFirst() {return first;}
