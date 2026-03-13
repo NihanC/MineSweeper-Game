@@ -1,8 +1,8 @@
 package org.myteam.minesweeper;
 
-public class Mine extends Tile {
+public class EmptyTile extends Tile{
 
-    public Mine(int r, int c) {
+    public EmptyTile(int r, int c) {
         super(r, c);
     }
 
@@ -10,7 +10,7 @@ public class Mine extends Tile {
     public void open(Board board, Game game) {
         if (!flagged && !revealed) {
             revealed = true;
-            game.gameOver();
+//            board.openAdjacentTiles(row, col, game);
         }
     }
 }

@@ -14,12 +14,15 @@ public abstract class Tile {
     }
 
     public void toggleFlag() {
-        if (!revealed) {
+        if (!revealed && !flagged) {
             flagged = true;
+        }
+        else if (flagged) {
+            flagged = false;
         }
     }
 
-    public abstract void open();
+    public abstract void open(Board board, Game game);
 
     public boolean isFlagged() {
         return flagged;
