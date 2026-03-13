@@ -120,9 +120,19 @@ public class UI extends Application{
         gridPane.add(max_ValueL, 0, 17);
         gridPane.add(theMax_ValueLabel, 1, 17);
 
-        celsiusButton.setOnAction(e -> {
-            String ids=api.getTemperatureSensorIds();
-            celsiusIdsLabel.setText(ids);
+
+        button.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if(event.getButton() == MouseButton.SECONDARY){
+//                  Type code to set flag here
+                }
+            }
+        });
+        button.setOnMouseClickedEvent(e -> {
+            if(event.getButton() == MouseButton.PRIMARY){
+
+            }
         });
 
         highestHpaButton.setOnAction(e -> {
@@ -160,6 +170,9 @@ public class UI extends Application{
         Scene scene = new Scene(gridPane, 850, 700);
         primaryStage.setScene(scene);
         primaryStage.show();
+
+
+
 
     }
 
@@ -202,13 +215,4 @@ public class UI extends Application{
     public static void main(String[] args) {
         launch(args);
     }
-//l
-button.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-        @Override
-        public void handle(MouseEvent event) {
-            if(event.getButton() == MouseButton.SECONDARY){
-//                  Type code to set flag here
-            }
-        }
-    });
 }
