@@ -11,6 +11,7 @@ public class Mine extends Tile {
         if (!flagged && !revealed) {
             revealed = true;
             game.gameOver();
+            board.revealAllTiles();
         }
     }
 }

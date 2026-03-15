@@ -25,7 +25,8 @@ public class Board {
             if(firstTile){
                 first = grid[row][col];
                 populate();
-                first.open(this, game); //method from Tile class
+                fillNumbers();
+                grid[row][col].open(this, game);
                 firstTile = false;
             }
             else{
@@ -35,7 +36,11 @@ public class Board {
         }
         else{
             Tile leftClickedTile = grid[row][col];
-            leftClickedTile.toggleFlag();
+            leftClickedTile.toggleFlag(this, game);
+        }
+
+        if(!game.isGameOver() && checkWin()){
+            game.win();
         }
     }
 
@@ -50,10 +55,7 @@ public class Board {
     }
 
     public boolean isInMinedTiles(int r, int c){
-        if(grid[r][c] instanceof Mine){
-            return true;
-        }
-        return false;
+        return grid[r][c] instanceof Mine;
     }
 
     public void populate(){
@@ -65,8 +67,53 @@ public class Board {
             while((grid[i][j]==first)||(isInMinedTiles(i,j))) {
                     i = r.nextInt(rowNum);
                     j = r.nextInt(colNum);
-                }
+            }
             grid[i][j] = new Mine(i,j);}
+    }
+
+    public int countAdjacentMines(int row, int col){
+        int count=0;
+
+        for(int i=Math.max(0, row-1); i<=Math.min(rowNum-1, row+1); i++){
+            for(int j=Math.max(0, col-1); j<=Math.min(colNum-1, col+1); j++){
+                if(!(i==row && j==col)&& grid[i][j] instanceof Mine){
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    public void fillNumbers(){
+        for(int i=0; i<rowNum; i++){
+            for(int j=0; j<colNum; j++){
+                if(!(grid[i][j] instanceof Mine)){
+                    int count= countAdjacentMines(i,j);
+                    if(count>0){
+                        grid[i][j]= new NumberTile(i, j, count);
+                    }
+                }
+            }
+        }
+    }
+
+    public void revealAllTiles(){
+        for(int i=0; i<rowNum; i++){
+            for(int j=0; j<colNum; j++){
+                grid[i][j].setRevealed(true);
+            }
+        }
+    }
+
+    public boolean checkWin(){
+        for(int i=0; i<rowNum; i++){
+            for(int j=0; j<colNum; j++){
+                if(!(grid[i][j] instanceof Mine) && !grid[i][j].isRevealed()){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public Tile[][] getGrid(){return grid;}

@@ -11,7 +11,7 @@ public class Game {
 
     public Game(Level level) {
         this.level = level;
-//        this.board = new Board(level);  Board class should accept a Level type param
+        this.board = new Board(level);  //Board class should accept a Level type param
         this.flagsLeft = level.getMines();
         this.newGame = true;
         this.gameOver = false;
@@ -25,7 +25,7 @@ public class Game {
 
     public void newGame(Level level) {
         this.level = level;
-//        this.board = new Board(level); Board class should accept a Level type param
+        this.board = new Board(level); //Board class should accept a Level type param
         this.flagsLeft = level.getMines();
         this.newGame = true;
         this.gameOver = false;

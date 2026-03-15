@@ -6,28 +6,34 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.layout.GridPane;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.input.MouseButton;
-import javafx.event.EventHandler;
 
 
 public class UI extends Application{
 
     private Label timer;
     private Label instructions;
-    private String level;
+    private Label flags;
+
+    private Scene startScene;
+    private Stage mainStage;
+
     private Button[][] theButtons;
-    private int rows;
-    private int columns;
+
+    private Game game;
+    private UserInput userInput;
+
+    private GridPane boardG;
+
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("Minesweeper");
+        mainStage=primaryStage;
+        userInput= new UserInput();
 
         GridPane firstGrid = new GridPane();
         firstGrid.setHgap(10);
@@ -37,179 +43,154 @@ public class UI extends Application{
 
         Label levelL= new Label("Level: ");
         TextField chooseL= new TextField();
+        Button startButton= new Button("Start");
+
         firstGrid.add(levelL, 0, 0);
         firstGrid.add(chooseL, 1, 0);
+        firstGrid.add(startButton, 1, 1);
 
+        startScene = new Scene(firstGrid, 400, 200);
 
-        Scene scene1 = new Scene(firstGrid, 400, 200);
-        primaryStage.setScene(scene1);
+        startButton.setOnAction(e -> {
+            String inputS= chooseL.getText().trim().toLowerCase();
 
+            Level chosenLevel;
 
-
-        Scene easyScene= new Scene(easyGrid, 800, 800);
-        Scene mediumScene= new Scene(mediumGrid, 800, 800);
-        Scene hardScene= new Scene(hardGrid, 800, 800);
-
-
-        chooseL.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue.equals("easy")){
-                level="easy";
-                primaryStage.setScene(easyScene);
+            if(inputS.equals("easy")){
+                chosenLevel=Level.EASY;
             }
-            else if(newValue.equals("medium")){
-                level="medium";
-                primaryStage.setScene(mediumScene);
+            else if(inputS.equals("medium")){
+                chosenLevel=Level.MEDIUM;
             }
-            else if(newValue.equals("hard")){
-                level="hard";
-                primaryStage.setScene(hardScene);
+            else if(inputS.equals("hard")){
+                chosenLevel=Level.HARD;
             }
-        });
-
-        timer = new Label("Time:");
-        instructions = new Label("Left click: open\nRight click: flag");
-
-
-        GridPane gridPane= new GridPane();
-        gridPane.setHgap(10);
-        gridPane.setVgap(10);
-        gridPane.setAlignment(Pos.CENTER);
-
-        gridPane.add(timer, 0, 0);
-        gridPane.add(instructions, 0, 1);
-
-
-
-        Button but= new Button();
-
-
-
-        gridPane.add(highestHpaButton, 0, 1);
-        gridPane.add(highestHpaLabel, 1, 1);
-
-        gridPane.add(unitTextL, 0, 2);
-        gridPane.add(unitTF, 1, 2);
-        gridPane.add(specificUnitButton, 0, 3);
-        gridPane.add(specificUnitLabel, 1, 3);
-
-        gridPane.add(locationInsertL, 0, 5);
-        gridPane.add(locationInsertTF, 1, 5);
-        gridPane.add(unitInsertL, 0, 6);
-        gridPane.add(unitInsertTF, 1, 6);
-        gridPane.add(lastValueInsertL, 0, 7);
-        gridPane.add(lastValueInsertTF, 1, 7);
-        gridPane.add(max_ValueInsertL, 0, 8);
-        gridPane.add(max_ValueInsertTF, 1, 8);
-        gridPane.add(insertButton, 0, 9);
-        gridPane.add(insertLabel, 1, 9);
-
-
-        gridPane.add(sensorIdL, 0, 11);
-        gridPane.add(sensorIdField, 1, 11);
-        gridPane.add(sensorInfoButton, 0, 12);
-
-
-        gridPane.add(idL, 0, 13);
-        gridPane.add(theIdLabel, 1, 13);
-        gridPane.add(locationL, 0, 14);
-        gridPane.add(theLocationLabel, 1, 14);
-        gridPane.add(measurementUnitsL, 0, 15);
-        gridPane.add(theUnitLabel, 1, 15);
-        gridPane.add(lastValueL, 0, 16);
-        gridPane.add(theLastValueLabel, 1, 16);
-        gridPane.add(max_ValueL, 0, 17);
-        gridPane.add(theMax_ValueLabel, 1, 17);
-
-
-        button.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                if(event.getButton() == MouseButton.SECONDARY){
-//                  Type code to set flag here
-                }
+            else{
+                chooseL.setText("Write: easy, medium or hard");
+                return;
             }
-        });
-        button.setOnMouseClickedEvent(e -> {
-            if(event.getButton() == MouseButton.PRIMARY){
 
-            }
-        });
-
-        highestHpaButton.setOnAction(e -> {
-            String location=api.getHighestHPaLocation();
-            highestHpaLabel.setText(location);
+            game= new Game(chosenLevel);
+            Scene gameScene=createGameScene();
+            primaryStage.setScene(gameScene);
+            updateBoard();
         });
 
-        specificUnitButton.setOnAction(e -> {
-            String unit=unitTF.getText();
-            String location= api.getHighestLocationForUnit(unit);
-            specificUnitLabel.setText(location);
-        });
-
-        insertButton.setOnAction(e -> {
-            String location=locationInsertTF.getText();
-            String unit= unitInsertTF.getText();
-            String lvalue=lastValueInsertTF.getText();
-            String mvalue= max_ValueInsertTF.getText();
-
-            String result=api.insertSensor(location, unit, lvalue, mvalue);
-            insertLabel.setText(result);
-        });
-
-        sensorInfoButton.setOnAction(e -> {
-            String id=sensorIdField.getText();
-            String[] info= api.getSensorInfo(id);
-
-            theIdLabel.setText(info[0]);
-            theLocationLabel.setText(info[1]);
-            theUnitLabel.setText(info[2]);
-            theLastValueLabel.setText(info[3]);
-            theMax_ValueLabel.setText(info[4]);
-        });
-
-        Scene scene = new Scene(gridPane, 850, 700);
-        primaryStage.setScene(scene);
+        primaryStage.setTitle("Minesweeper");
+        primaryStage.setScene(startScene);
         primaryStage.show();
-
-
-
-
     }
 
-    public void generateFromLevel(String level)
-    {
-        if(level.equals("easy")){
-            rows=10;
-            columns=10;
-        }
-        else if(level.equals("medium")){
-            rows=20;
-            columns=20;
-        }
-        else if(level.equals("hard")){
-            rows=30;
-            columns=30;
-        }
+    private Scene createGameScene(){
+        BorderPane root= new BorderPane();
 
-        theButtons=new Button[rows][columns];
+        timer= new Label("Time: 0");
+        instructions= new Label("Left click: open   Right click: flag/unflag");
+        flags= new Label("Flags left :"+game.getFlagsLeft());
+
+        Button newGameButton= new Button("New Game");
+        HBox topBox= new HBox(20, timer,flags, instructions, newGameButton);
+        topBox.setAlignment(Pos.CENTER);
+
+        newGameButton.setOnAction(e -> {
+            mainStage.setScene(startScene);
+        });
+
+        boardG=new GridPane();
+        boardG.setHgap(2);
+        boardG.setVgap(2);
+        boardG.setAlignment(Pos.CENTER);
+
+        int rows= game.getBoard().getRowNum();
+        int columns= game.getBoard().getColNum();
+
+        theButtons= new Button[rows][columns];
+
         for(int i=0; i<rows; i++){
-            for(int e=0; i<columns;e++){
-                Button aBut= new Button();
-                aBut.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent event) {
+            for(int j=0; j<columns;j++){
+                int row=i;
+                int column=j;
 
-                        if(event.getButton() == MouseButton.PRIMARY){
-//
-                        }
-                        else if(event.getButton() == MouseButton.SECONDARY){
-//                  Type code to set flag here
-                        }
+                Button aBut= new Button();
+                aBut.setPrefSize(35,35);
+
+                aBut.setOnMouseClicked(event ->{
+                    Command command;
+
+                    if(event.getButton()==MouseButton.PRIMARY){
+                        command=userInput.open(row, column);
                     }
+                    else if(event.getButton()==MouseButton.SECONDARY){
+                        command=userInput.flag(row, column);
+                    }
+                    else{
+                        return;
+                    }
+                    processCommand(command);
+                    updateBoard();
                 });
+
+                theButtons[i][j]=aBut;
+                boardG.add(aBut, j, i);
             }
         }
 
+        root.setTop(topBox);
+        root.setCenter(boardG);
+
+        return new Scene(root,900, 700);
+    }
+
+    private void processCommand(Command command){
+        if(!command.isValid()){
+            return;
+        }
+        if(command.getCommand().equals("open")){
+            game.getBoard().click(false, command.getRow(), command.getColumn(), game);
+        }
+        else if(command.getCommand().equals("flag")){
+            game.getBoard().click(true, command.getRow(), command.getColumn(), game);
+        }
+
+        flags.setText("Flags left: "+game.getFlagsLeft());
+        timer.setText("Time: "+game.getTime());
+
+        if(game.isGameOver()){
+            instructions.setText("Game over!");
+        }
+        else if(game.isWon()){
+            instructions.setText("You won!");
+        }
+    }
+
+    private void updateBoard(){
+        Tile[][] grid= game.getBoard().getGrid();
+
+        for(int i=0; i<game.getBoard().getRowNum();i++){
+            for(int j=0; j<game.getBoard().getColNum(); j++){
+                Tile tile=grid[i][j];
+                Button aButton=theButtons[i][j];
+
+                if(tile.isRevealed()){
+                    if(tile instanceof Mine){
+                        aButton.setText("M");
+                    }
+                    else if(tile instanceof NumberTile){
+                        NumberTile n=(NumberTile) tile;
+                        aButton.setText(String.valueOf(n.getValue()));
+                    }
+                    else{
+                        aButton.setText("");
+                    }
+                }
+                else if(tile.isFlagged()){
+                    aButton.setText("F");
+                }
+                else {
+                    aButton.setText("");
+                }
+            }
+        }
     }
 
     public static void main(String[] args) {

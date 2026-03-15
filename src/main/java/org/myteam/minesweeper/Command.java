@@ -4,13 +4,13 @@ public class Command {
    private String command;
    private int row;
    private int column;
-   private boolean validity;
+   private boolean valid;
 
-    public Command(String command, int row, int column, boolean validity) {
+    public Command(String command, int row, int column, boolean valid) {
         this.command = command;
         this.row = row;
         this.column = column;
-        this.validity = validity;
+        this.valid = valid;
     }
 
     public String getCommand() {
@@ -25,7 +25,7 @@ public class Command {
         return column;
     }
 
-    public boolean isValidity() {
-        return validity;
+    public boolean isValid() {
+        return valid;
     }
 }
