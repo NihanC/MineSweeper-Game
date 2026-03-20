@@ -5,7 +5,7 @@ public class Board {
     private Tile[][] grid;
     private boolean firstTile;
     private int nrOfMines;
-    private ArrayList<Tile> minedTiles;
+    private ArrayList<Mine> minedTiles;
     private Tile first;
     private int rowNum;
     private int colNum;
@@ -74,6 +74,10 @@ public class Board {
             grid[i][j] = new Mine(i,j);}
     }
 
+//    public void fillSpecial(){
+//
+//    }
+
     public boolean isNeighbourOfFirst(int i, int j) {
         return Math.abs(i - first.getRow()) <= 1 && Math.abs(j - first.getColumn()) <= 1;
     }
@@ -141,5 +145,5 @@ public class Board {
     public Tile getFirst() {return first;}
     public int getRowNum(){return rowNum;}
     public int getColNum(){return colNum;}
-    public ArrayList<Tile> getMinedTiles(){return minedTiles;}
+    public ArrayList<Mine> getMinedTiles(){return minedTiles;}
 }

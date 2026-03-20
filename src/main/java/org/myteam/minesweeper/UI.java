@@ -146,53 +146,53 @@ public class UI extends Application{
         return new Scene(root,900, 700);
     }
 
-    private Scene createEquationScene(){
-        Label challengeTimer = new Label("Time: 10");
-        Label challengeInstructions = new Label("Solve this equation or die");
-        Label num1 = new Label("What is " + eqNum1 + " ");
-        Label symbol = new Label("+");
-        Label num2 = new Label(" " + eqNum2);
-        int sum = eqNum1 + eqNum2;
-        TextField answer = new TextField();
-
-        HBox topBox = new HBox(20, challengeTimer, challengeInstructions);
-        HBox middleBox = new HBox(num1, symbol, num2);
-        HBox bottomBox = new HBox(answer);
-        VBox vbox = new VBox(topBox, middleBox, bottomBox);
-        topBox.setAlignment(Pos.CENTER);
-
-        BorderPane root = new BorderPane();
-        root.setCenter(vbox);
-
-        // FIX 2: Added a proper 10-second countdown using Timeline.
-        //         It ticks once per second, updates the label, and
-        //         returns to the start screen when time runs out.
-        int[] timeLeft = {10};
-        javafx.animation.Timeline countdown = new javafx.animation.Timeline(
-                new javafx.animation.KeyFrame(javafx.util.Duration.seconds(1), e -> {
-                    timeLeft[0]--;
-                    challengeTimer.setText("Time: " + timeLeft[0]);
-                    if (timeLeft[0] <= 0) {
-                        // Time's up — send player back to start (adjust as needed)
-                        mainStage.setScene(startScene);
-                        game.gameOver();
-                    }
-                })
-        );
-        countdown.setCycleCount(10);
-        countdown.play();
-
-        answer.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.equals("" + sum)) {
-                countdown.stop(); // Stop the timer on correct answer
-                // FIX 3: Was "EquationScene.setScene(mainStage)" — object and
-                //         method were swapped. Correct call is on mainStage.
-                mainStage.setScene(startScene);
-            }
-        });
-
-        return new Scene(root, 200, 300);
-    }
+//    private Scene createEquationScene(){
+//        Label challengeTimer = new Label("Time: 10");
+//        Label challengeInstructions = new Label("Solve this equation or die");
+//        Label num1 = new Label("What is " + eqNum1 + " ");
+//        Label symbol = new Label("+");
+//        Label num2 = new Label(" " + eqNum2);
+//        int sum = eqNum1 + eqNum2;
+//        TextField answer = new TextField();
+//
+//        HBox topBox = new HBox(20, challengeTimer, challengeInstructions);
+//        HBox middleBox = new HBox(num1, symbol, num2);
+//        HBox bottomBox = new HBox(answer);
+//        VBox vbox = new VBox(topBox, middleBox, bottomBox);
+//        topBox.setAlignment(Pos.CENTER);
+//
+//        BorderPane root = new BorderPane();
+//        root.setCenter(vbox);
+//
+//        // FIX 2: Added a proper 10-second countdown using Timeline.
+//        //         It ticks once per second, updates the label, and
+//        //         returns to the start screen when time runs out.
+//        int[] timeLeft = {10};
+//        javafx.animation.Timeline countdown = new javafx.animation.Timeline(
+//                new javafx.animation.KeyFrame(javafx.util.Duration.seconds(1), e -> {
+//                    timeLeft[0]--;
+//                    challengeTimer.setText("Time: " + timeLeft[0]);
+//                    if (timeLeft[0] <= 0) {
+//                        // Time's up — send player back to start (adjust as needed)
+//                        mainStage.setScene(startScene);
+//                        game.gameOver();
+//                    }
+//                })
+//        );
+//        countdown.setCycleCount(10);
+//        countdown.play();
+//
+//        answer.textProperty().addListener((observable, oldValue, newValue) -> {
+//            if (newValue.equals("" + sum)) {
+//                countdown.stop(); // Stop the timer on correct answer
+//                // FIX 3: Was "EquationScene.setScene(mainStage)" — object and
+//                //         method were swapped. Correct call is on mainStage.
+//                mainStage.setScene(startScene);
+//            }
+//        });
+//
+//        return new Scene(root, 200, 300);
+//    }
 
     private void processCommand(Command command){
         if(!command.isValid()){
@@ -237,15 +237,18 @@ public class UI extends Application{
                     } else if (tile instanceof EmptyTile) {
                         aButton.setText("/");
                     }
-                    else if(tile instanceof SpecialEquationTile){
-                        SpecialEquationTile s = (SpecialEquationTile) tile;
-                        eqNum1 = s.getNum1();
-                        eqNum2 = s.getNum2();
-                        aButton.setText("S");
-                        // FIX 4: Was setting the scene to the null EquationScene field.
-                        //         Now calls createEquationScene() fresh each time so the
-                        //         correct numbers and a fresh timer are always used.
-                        aButton.setOnAction((event) -> mainStage.setScene(createEquationScene()));
+//                    else if(tile instanceof SpecialEquationTile){
+//                        SpecialEquationTile s = (SpecialEquationTile) tile;
+//                        eqNum1 = s.getNum1();
+//                        eqNum2 = s.getNum2();
+//                        aButton.setText("S");
+//                        // FIX 4: Was setting the scene to the null EquationScene field.
+//                        //         Now calls createEquationScene() fresh each time so the
+//                        //         correct numbers and a fresh timer are always used.
+//                        aButton.setOnAction((event) -> mainStage.setScene(createEquationScene()));
+//                    }
+                    else if(tile instanceof RadarTile){
+                        aButton.setText("R");
                     }
                     else{
                         aButton.setText("");
