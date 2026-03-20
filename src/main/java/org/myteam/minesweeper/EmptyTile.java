@@ -10,7 +10,7 @@ public class EmptyTile extends Tile{
     public void open(Board board, Game game) {
         if (!flagged && !revealed) {
             revealed = true;
-//            board.openAdjacentTiles(row, col, game);
+            board.openAdjacentTiles(row, column, game);
         }
     }
 }

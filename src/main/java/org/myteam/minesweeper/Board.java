@@ -78,6 +78,16 @@ public class Board {
         return Math.abs(i - first.getRow()) <= 1 && Math.abs(j - first.getColumn()) <= 1;
     }
 
+    public void openAdjacentTiles(int row, int col, Game game) {
+        for (int r = row - 1; r <= row + 1; r++) {
+            for (int c = col - 1; c <= col + 1; c++) {
+                if (r >= 0 && r < rowNum && c >= 0 && c < colNum) {
+                    grid[r][c].open(this, game);
+                }
+            }
+        }
+    }
+
     public int countAdjacentMines(int row, int col){
         int count=0;
 

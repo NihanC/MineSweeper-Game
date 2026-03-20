@@ -178,6 +178,8 @@ public class UI extends Application{
                     else if(tile instanceof NumberTile){
                         NumberTile n=(NumberTile) tile;
                         aButton.setText(String.valueOf(n.getValue()));
+                    } else if (tile instanceof EmptyTile) {
+                        aButton.setText("/");
                     }
                     else{
                         aButton.setText("");
