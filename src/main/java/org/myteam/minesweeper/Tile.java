@@ -22,6 +22,22 @@ public abstract class Tile {
         }
     }
 
+    public int getRow() {
+        return row;
+    }
+
+    public int getColumn() {
+        return column;
+    }
+
+    public void setRow(int row) {
+        this.row = row;
+    }
+
+    public void setColumn(int column) {
+        this.column = column;
+    }
+
     public void toggleFlag(Board board, Game game) {  // actual toggleFlag
         if (!revealed && !flagged) {
             flagged = true;

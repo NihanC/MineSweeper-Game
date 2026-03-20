@@ -23,7 +23,10 @@ public class Board {
     public void click(boolean rightClick,int row, int col, Game game){
         if(!rightClick){
             if(firstTile){
-                first = grid[row][col];
+                first = new EmptyTile(row,col);
+                grid[row][col] = first;
+                first.setRow(row);
+                first.setColumn(col);
                 populate();
                 fillNumbers();
                 grid[row][col].open(this, game);
@@ -64,11 +67,15 @@ public class Board {
         for(int mineGenerated=0; mineGenerated<nrOfMines; mineGenerated++){
             int i = r.nextInt(rowNum);
             int j = r.nextInt(colNum);
-            while((grid[i][j]==first)||(isInMinedTiles(i,j))) {
+            while((isNeighbourOfFirst(i,j))||(isInMinedTiles(i,j))) {
                     i = r.nextInt(rowNum);
                     j = r.nextInt(colNum);
             }
             grid[i][j] = new Mine(i,j);}
+    }
+
+    public boolean isNeighbourOfFirst(int i, int j) {
+        return Math.abs(i - first.getRow()) <= 1 && Math.abs(j - first.getColumn()) <= 1;
     }
 
     public int countAdjacentMines(int row, int col){
@@ -91,6 +98,8 @@ public class Board {
                     int count= countAdjacentMines(i,j);
                     if(count>0){
                         grid[i][j]= new NumberTile(i, j, count);
+                    } else {
+                        grid[i][j] = new EmptyTile(i, j);
                     }
                 }
             }
