@@ -9,14 +9,20 @@ public class GameTest {
 
     @Test
     public void testMines() {
+        testMinesForLevel(Level.EASY);
+        testMinesForLevel(Level.MEDIUM);
+        testMinesForLevel(Level.HARD);
+    }
+
+    public void testMinesForLevel(Level level) {
         Random rand = new Random();
         for (int attempt = 0; attempt < 100; attempt++) {
-            Board board = new Board(Level.EASY);
+            Board board = new Board(level);
             int rows = board.getRowNum();
             int cols = board.getColNum();
             int firstRow = rand.nextInt(board.getRowNum());
             int firstCol = rand.nextInt(board.getColNum());
-            board.click(false,firstRow,firstCol,new Game(Level.EASY));
+            board.click(false,firstRow,firstCol,new Game(level));
             int mineCount = 0;
             for (int i = 0; i < rows; i++)
                 for (int j = 0; j < cols; j++)
@@ -24,6 +30,29 @@ public class GameTest {
                         mineCount++;
 
             assertEquals(board.getNrOfMines(), mineCount);
+        }
+    }
+
+    @Test
+    public void testRows() {
+        testRowsForLevel(Level.EASY);
+        testRowsForLevel(Level.MEDIUM);
+        testRowsForLevel(Level.HARD);
+    }
+
+    public void testRowsForLevel(Level level) {
+        Random rand = new Random();
+        for (int attempt = 0; attempt < 100; attempt++) {
+            Board board = new Board(Level.EASY);
+            int rows = board.getRowNum();
+            int firstRow = rand.nextInt(board.getRowNum());
+            int firstCol = rand.nextInt(board.getColNum());
+            board.click(false, firstRow, firstCol, new Game(Level.EASY));
+            int rowCount = 0;
+            for (int i = 0; i < rows; i++) {
+                rowCount++;
+            }
+            assertEquals(board.getRowNum(), rowCount);
         }
     }
 }
