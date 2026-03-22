@@ -55,4 +55,32 @@ public class GameTest {
             assertEquals(board.getRowNum(), rowCount);
         }
     }
+
+    @Test
+    public void testColumns() {
+        testColumnsForLevel(Level.EASY);
+        testColumnsForLevel(Level.MEDIUM);
+        testColumnsForLevel(Level.HARD);
+    }
+
+    public void testColumnsForLevel(Level level) {
+        Random rand = new Random();
+        for (int attempt = 0; attempt < 100; attempt++) {
+            Board board = new Board(Level.EASY);
+            int columns = board.getColNum();
+            int firstRow = rand.nextInt(board.getRowNum());
+            int firstCol = rand.nextInt(board.getColNum());
+            board.click(false, firstRow, firstCol, new Game(Level.EASY));
+            int columnCount = 0;
+            for (int i = 0; i < columns; i++) {
+                columnCount++;
+            }
+            assertEquals(board.getRowNum(), columnCount);
+        }
+    }
+
+    @Test
+    public void testWorldAccToDifficulty() {
+
+    }
 }
