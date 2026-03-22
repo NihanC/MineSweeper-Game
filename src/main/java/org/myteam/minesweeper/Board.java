@@ -1,6 +1,9 @@
 package org.myteam.minesweeper;
 import java.util.ArrayList;
 import java.util.Random;
+
+import static org.myteam.minesweeper.Level.*;
+
 public class Board {
     private Tile[][] grid;
     private boolean firstTile;
@@ -9,6 +12,7 @@ public class Board {
     private Tile first;
     private int rowNum;
     private int colNum;
+    private Level level;
 
 
     public Board(Level level){
@@ -17,6 +21,7 @@ public class Board {
         colNum = level.getCols();
         nrOfMines = level.getMines();
         grid = new Tile[rowNum][colNum];
+        this.level = level;
         generate(level);
     }
 
@@ -28,6 +33,7 @@ public class Board {
                 first.setRow(row);
                 first.setColumn(col);
                 populate();
+                fillSpecial();
                 fillNumbers();
                 grid[row][col].open(this, game);
                 firstTile = false;
@@ -74,9 +80,28 @@ public class Board {
             grid[i][j] = new Mine(i,j);}
     }
 
-//    public void fillSpecial(){
-//
-//    }
+    public void fillSpecial(){
+        int countSpecial = 0;
+        if(level == EASY){
+            countSpecial = 2;
+        }
+        else if(level == MEDIUM){
+            countSpecial = 8;
+        }
+        else{
+            countSpecial = 24;
+        }
+        Random r= new Random();
+        for(int c=0; c<countSpecial; c++){
+            int i = r.nextInt(rowNum);
+            int j = r.nextInt(colNum);
+            while((grid[i][j] instanceof Mine)) {
+                i = r.nextInt(rowNum);
+                j = r.nextInt(colNum);
+            }
+            grid[i][j] = new RadarTile(i,j);}
+
+    }
 
     public boolean isNeighbourOfFirst(int i, int j) {
         return Math.abs(i - first.getRow()) <= 1 && Math.abs(j - first.getColumn()) <= 1;
@@ -108,7 +133,7 @@ public class Board {
     public void fillNumbers(){
         for(int i=0; i<rowNum; i++){
             for(int j=0; j<colNum; j++){
-                if(!(grid[i][j] instanceof Mine)){
+                if(!(grid[i][j] instanceof Mine) && !(grid[i][j] instanceof RadarTile)){
                     int count= countAdjacentMines(i,j);
                     if(count>0){
                         grid[i][j]= new NumberTile(i, j, count);
