@@ -20,8 +20,8 @@ public class Board {
         rowNum = level.getRows();
         colNum = level.getCols();
         nrOfMines = level.getMines();
-        grid = new Tile[rowNum][colNum];
         this.level = level;
+        grid = new Tile[rowNum][colNum];
         generate(level);
     }
 
@@ -77,7 +77,10 @@ public class Board {
                     i = r.nextInt(rowNum);
                     j = r.nextInt(colNum);
             }
-            grid[i][j] = new Mine(i,j);}
+            Mine mine = new Mine(i,j);
+            grid[i][j] = mine;
+            minedTiles.add(mine);
+        }
     }
 
     public void fillSpecial(){
@@ -92,15 +95,15 @@ public class Board {
             countSpecial = 24;
         }
         Random r= new Random();
-        for(int c=0; c<countSpecial+1; c++){
+        for(int c=0; c<countSpecial; c++){
             int i = r.nextInt(rowNum);
             int j = r.nextInt(colNum);
             while((grid[i][j] instanceof Mine) || (grid[i][j] instanceof RadarTile)) {
                 i = r.nextInt(rowNum);
                 j = r.nextInt(colNum);
             }
-            grid[i][j] = new RadarTile(i,j);}
-
+            grid[i][j] = new RadarTile(i,j);
+        }
     }
 
     public boolean isNeighbourOfFirst(int i, int j) {
