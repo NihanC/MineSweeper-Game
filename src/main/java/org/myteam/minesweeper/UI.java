@@ -255,7 +255,7 @@ public class UI extends Application{
                     }
                 }
                 else if(tile.isFlagged()){
-                    if(game.getFlagsLeft()>0){
+                    if(game.getFlagsLeft()>=0){
                         aButton.setText("F");}
                 }
                 else {
