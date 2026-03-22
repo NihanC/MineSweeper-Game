@@ -92,10 +92,10 @@ public class Board {
             countSpecial = 24;
         }
         Random r= new Random();
-        for(int c=0; c<countSpecial; c++){
+        for(int c=0; c<countSpecial+1; c++){
             int i = r.nextInt(rowNum);
             int j = r.nextInt(colNum);
-            while((grid[i][j] instanceof Mine)) {
+            while((grid[i][j] instanceof Mine) || (grid[i][j] instanceof RadarTile)) {
                 i = r.nextInt(rowNum);
                 j = r.nextInt(colNum);
             }

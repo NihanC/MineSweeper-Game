@@ -23,9 +23,6 @@ public class UI extends Application{
     private Scene startScene;
     private Stage mainStage;
 
-    // FIX 1: Removed the unused EquationScene field — the scene is now
-    //         created fresh each time via createEquationScene(), ensuring
-    //         the numbers and timer are always up to date.
 
     private Button[][] theButtons;
 
@@ -216,8 +213,8 @@ public class UI extends Application{
         }
     }
 
-    private int eqNum1;
-    private int eqNum2;
+//    private int eqNum1;
+//    private int eqNum2;
 
     private void updateBoard(){
         Tile[][] grid= game.getBoard().getGrid();
