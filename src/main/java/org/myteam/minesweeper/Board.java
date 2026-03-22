@@ -34,6 +34,7 @@ public class Board {
                 first.setColumn(col);
                 populate();
                 fillSpecial();
+                putEquation();
                 fillNumbers();
                 grid[row][col].open(this, game);
                 firstTile = false;
@@ -98,13 +99,25 @@ public class Board {
         for(int c=0; c<countSpecial; c++){
             int i = r.nextInt(rowNum);
             int j = r.nextInt(colNum);
-            while((grid[i][j] instanceof Mine) || (grid[i][j] instanceof RadarTile)) {
+            while(((grid[i][j] instanceof Mine) || (grid[i][j] instanceof RadarTile))&& !(grid[i][j]==first)) {
                 i = r.nextInt(rowNum);
                 j = r.nextInt(colNum);
             }
             grid[i][j] = new RadarTile(i,j);
         }
     }
+
+    public void putEquation(){
+        Random r= new Random();
+            int i = r.nextInt(rowNum);
+            int j = r.nextInt(colNum);
+            while(((grid[i][j] instanceof Mine) || (grid[i][j] instanceof RadarTile))&&!(grid[i][j]==first)) {
+                i = r.nextInt(rowNum);
+                j = r.nextInt(colNum);
+            }
+            grid[i][j] = new SpecialEquationTile(i,j);
+    }
+
 
     public boolean isNeighbourOfFirst(int i, int j) {
         return Math.abs(i - first.getRow()) <= 1 && Math.abs(j - first.getColumn()) <= 1;
@@ -136,7 +149,7 @@ public class Board {
     public void fillNumbers(){
         for(int i=0; i<rowNum; i++){
             for(int j=0; j<colNum; j++){
-                if(!(grid[i][j] instanceof Mine) && !(grid[i][j] instanceof RadarTile)){
+                if((!(grid[i][j] instanceof Mine) && !(grid[i][j] instanceof RadarTile) && !(grid[i][j] instanceof SpecialEquationTile))&&!(grid[i][j]==first)){
                     int count= countAdjacentMines(i,j);
                     if(count>0){
                         grid[i][j]= new NumberTile(i, j, count);
@@ -174,4 +187,5 @@ public class Board {
     public int getRowNum(){return rowNum;}
     public int getColNum(){return colNum;}
     public ArrayList<Mine> getMinedTiles(){return minedTiles;}
+    public Level getLevel(){return level;}
 }
