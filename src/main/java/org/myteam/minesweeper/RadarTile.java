@@ -13,20 +13,29 @@ public class RadarTile extends Tile {
     public void open(Board board, Game game) {
         if (!flagged && !revealed) {
             revealed = true;
+
             ArrayList<Mine> mineList = board.getMinedTiles();
             if (mineList.isEmpty()) return;
-            Random r = new Random();
-            int i = r.nextInt(mineList.size());
-            Mine aMine = mineList.get(i);
-            if (game.getFlagsLeft() > 0) {
-                // Guard against infinite loop if all mines are already flagged
-                long unflaggedCount = mineList.stream().filter(m -> !m.isFlagged()).count();
-                if (unflaggedCount == 0) return;
 
-                while (aMine.isFlagged()) {
-                    i = r.nextInt(mineList.size());
-                    aMine = mineList.get(i);
+            Random r = new Random();
+
+            int unflaggedCount = 0;
+            for(Mine m: mineList){
+                if(!m.isFlagged()){
+                    unflaggedCount++;
                 }
+            }
+
+            if(unflaggedCount==0) return;
+
+
+            Mine aMine = mineList.get(r.nextInt(mineList.size()));
+
+            while(aMine.isFlagged()){
+                aMine=mineList.get(r.nextInt(mineList.size()));
+            }
+
+            if(game.getFlagsLeft()>0){
                 aMine.toggleFlag(board, game);
             }
         }

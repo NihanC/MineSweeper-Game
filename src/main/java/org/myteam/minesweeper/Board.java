@@ -28,10 +28,7 @@ public class Board {
     public void click(boolean rightClick,int row, int col, Game game){
         if(!rightClick){
             if(firstTile){
-                first = new EmptyTile(row,col);
-                grid[row][col] = first;
-                first.setRow(row);
-                first.setColumn(col);
+                first = grid[row][col];
                 populate();
                 fillSpecial();
                 putEquation();
@@ -99,7 +96,7 @@ public class Board {
         for(int c=0; c<countSpecial; c++){
             int i = r.nextInt(rowNum);
             int j = r.nextInt(colNum);
-            while(((grid[i][j] instanceof Mine) || (grid[i][j] instanceof RadarTile))&& !(grid[i][j]==first)) {
+            while(((grid[i][j] instanceof Mine) || (grid[i][j] instanceof RadarTile))|| (grid[i][j]==first)) {
                 i = r.nextInt(rowNum);
                 j = r.nextInt(colNum);
             }
@@ -111,7 +108,7 @@ public class Board {
         Random r= new Random();
             int i = r.nextInt(rowNum);
             int j = r.nextInt(colNum);
-            while(((grid[i][j] instanceof Mine) || (grid[i][j] instanceof RadarTile))&&!(grid[i][j]==first)) {
+            while(((grid[i][j] instanceof Mine) || (grid[i][j] instanceof RadarTile))||(grid[i][j]==first)) {
                 i = r.nextInt(rowNum);
                 j = r.nextInt(colNum);
             }

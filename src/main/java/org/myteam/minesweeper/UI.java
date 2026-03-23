@@ -204,6 +204,16 @@ public class UI extends Application{
         }
         if(command.getCommand().equals("open")){
             game.getBoard().click(false, command.getRow(), command.getColumn(), game);
+
+            Tile clickedTile=game.getBoard().getGrid()[command.getRow()][command.getColumn()];
+            if(clickedTile instanceof SpecialEquationTile){
+                SpecialEquationTile s= (SpecialEquationTile) clickedTile;
+                eqNum1=s.getNum1();
+                eqNum2=s.getNum2();
+                equation=s.getEquation();
+                mainStage.setScene(createEquationScene());
+                return;
+            }
         }
         else if(command.getCommand().equals("flag")){
             game.getBoard().click(true, command.getRow(), command.getColumn(), game);
@@ -232,40 +242,40 @@ public class UI extends Application{
                 Tile tile=grid[i][j];
                 Button aButton=theButtons[i][j];
 
+                aButton.setStyle("");
+
                 if(tile.isRevealed()){
                     if(tile instanceof Mine){
                         aButton.setText("M");
+                        aButton.setStyle("-fx-background-color: red;");
                     }
                     else if(tile instanceof NumberTile){
                         NumberTile n=(NumberTile) tile;
                         aButton.setText(String.valueOf(n.getValue()));
-                    } else if (tile instanceof EmptyTile) {
+                        aButton.setStyle("-fx-background-color: lightgray;");
+                    }
+                    else if (tile instanceof EmptyTile) {
                         aButton.setText("/");
+                        aButton.setStyle("-fx-background-color: white;");
                     }
                     else if(tile instanceof SpecialEquationTile){
-                        SpecialEquationTile s = (SpecialEquationTile) tile;
                         aButton.setText("S");
-                        aButton.setOnAction(null);
-                        if (eqNum1 == 0 && eqNum2 == 0) {
-                            eqNum1 = s.getNum1();
-                            eqNum2 = s.getNum2();
-                            equation = s.getEquation();
-                            mainStage.setScene(createEquationScene());
-                        }
+                        aButton.setStyle("-fx-background-color: plum;");
                     }
                     else if(tile instanceof RadarTile){
                         aButton.setText("R");
-                    }
-                    else{
-                        aButton.setText("");
+                        aButton.setStyle("-fx-background-color: lightblue;");
                     }
                 }
                 else if(tile.isFlagged()){
                     if(game.getFlagsLeft()>=0){
-                        aButton.setText("F");}
+                        aButton.setText("F");
+                        aButton.setStyle("-fx-background-color: yellow;");
+                    }
                 }
                 else {
                     aButton.setText("");
+                    aButton.setStyle("-fx-background-color: #bdbdbd;");
                 }
             }
         }
