@@ -40,8 +40,10 @@ public abstract class Tile {
 
     public void toggleFlag(Board board, Game game) {  // actual toggleFlag
         if (!revealed && !flagged) {
-            flagged = true;
-            game.decreaseFlagsLeft();
+            if(game.getFlagsLeft()>0){
+                flagged = true;
+                game.decreaseFlagsLeft();
+            }
         }
         else if (flagged) {
             flagged = false;
