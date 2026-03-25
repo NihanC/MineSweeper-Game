@@ -1,9 +1,7 @@
 package org.myteam.minesweeper;
 
 import org.junit.jupiter.api.Test;
-
 import java.util.Random;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GameTest {
@@ -11,9 +9,8 @@ public class GameTest {
     //Generate the correct world according to customised parameters,
     // namely, row, column, and number of mines: no test because we don't use a
     // constructor o method like: new Board(rows, cols, mines)
-
-
     //Generate the correct world according to difficulty
+
     @Test
     public void testWorldGeneration() {
         Board easyBoard = new Board(Level.EASY);

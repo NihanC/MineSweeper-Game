@@ -177,6 +177,9 @@ public class UI extends Application{
                         eqNum1 = 0; eqNum2 = 0; equation = null; // reset so next S tile triggers correctly
                         game.gameOver();
                         mainStage.setScene(gameScene);
+                        instructions.setText("Game over!");
+                        game.getBoard().revealAllTiles();
+                        updateBoard();
                     }
                 })
         );
@@ -195,7 +198,7 @@ public class UI extends Application{
             }
         });
 
-        return new Scene(root, 200, 300);
+        return new Scene(root, 300, 200);
     }
 
     private void processCommand(Command command){
@@ -204,16 +207,6 @@ public class UI extends Application{
         }
         if(command.getCommand().equals("open")){
             game.getBoard().click(false, command.getRow(), command.getColumn(), game);
-
-            Tile clickedTile=game.getBoard().getGrid()[command.getRow()][command.getColumn()];
-            if(clickedTile instanceof SpecialEquationTile){
-                SpecialEquationTile s= (SpecialEquationTile) clickedTile;
-                eqNum1=s.getNum1();
-                eqNum2=s.getNum2();
-                equation=s.getEquation();
-                mainStage.setScene(createEquationScene());
-                return;
-            }
         }
         else if(command.getCommand().equals("flag")){
             game.getBoard().click(true, command.getRow(), command.getColumn(), game);
@@ -242,40 +235,40 @@ public class UI extends Application{
                 Tile tile=grid[i][j];
                 Button aButton=theButtons[i][j];
 
-                aButton.setStyle("");
-
                 if(tile.isRevealed()){
                     if(tile instanceof Mine){
                         aButton.setText("M");
-                        aButton.setStyle("-fx-background-color: red;");
                     }
                     else if(tile instanceof NumberTile){
                         NumberTile n=(NumberTile) tile;
                         aButton.setText(String.valueOf(n.getValue()));
-                        aButton.setStyle("-fx-background-color: lightgray;");
-                    }
-                    else if (tile instanceof EmptyTile) {
+                    } else if (tile instanceof EmptyTile) {
                         aButton.setText("/");
-                        aButton.setStyle("-fx-background-color: white;");
                     }
                     else if(tile instanceof SpecialEquationTile){
+                        SpecialEquationTile s = (SpecialEquationTile) tile;
                         aButton.setText("S");
-                        aButton.setStyle("-fx-background-color: plum;");
+                        aButton.setOnAction(null);
+                        if (eqNum1 == 0 && eqNum2 == 0  && !game.isGameOver()) {
+                            eqNum1 = s.getNum1();
+                            eqNum2 = s.getNum2();
+                            equation = s.getEquation();
+                            mainStage.setScene(createEquationScene());
+                        }
                     }
                     else if(tile instanceof RadarTile){
                         aButton.setText("R");
-                        aButton.setStyle("-fx-background-color: lightblue;");
+                    }
+                    else{
+                        aButton.setText("");
                     }
                 }
                 else if(tile.isFlagged()){
                     if(game.getFlagsLeft()>=0){
-                        aButton.setText("F");
-                        aButton.setStyle("-fx-background-color: yellow;");
-                    }
+                        aButton.setText("F");}
                 }
                 else {
                     aButton.setText("");
-                    aButton.setStyle("-fx-background-color: #bdbdbd;");
                 }
             }
         }
