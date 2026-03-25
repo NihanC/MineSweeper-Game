@@ -73,7 +73,7 @@ public class UI extends Application{
             }
 
             game= new Game(chosenLevel);
-            gameScene = createGameScene(); // FIX 1: assign to field so equation scene can reference it
+            gameScene = createGameScene();
             primaryStage.setScene(gameScene);
             updateBoard();
         });
