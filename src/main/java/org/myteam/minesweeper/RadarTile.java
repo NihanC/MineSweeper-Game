@@ -1,6 +1,7 @@
 package org.myteam.minesweeper;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class RadarTile extends Tile {
@@ -14,32 +15,23 @@ public class RadarTile extends Tile {
         if (!flagged && !revealed) {
             revealed = true;
 
+            if (game.getFlagsLeft() <= 0) return;
+
             ArrayList<Mine> mineList = board.getMinedTiles();
             if (mineList.isEmpty()) return;
 
-            Random r = new Random();
-
-            int unflaggedCount = 0;
-            for(Mine m: mineList){
-                if(!m.isFlagged()){
-                    unflaggedCount++;
+            List<Mine> unflaggedMines = new ArrayList<>();
+            for (Mine m : mineList) {
+                if (!m.isFlagged()) {
+                    unflaggedMines.add(m);
                 }
             }
 
-            if(unflaggedCount==0) return;
+            if (unflaggedMines.isEmpty()) return;
 
-
-            Mine aMine = mineList.get(r.nextInt(mineList.size()));
-
-            while(aMine.isFlagged()){
-                aMine=mineList.get(r.nextInt(mineList.size()));
-            }
-
-            if(game.getFlagsLeft()>0){
-                aMine.toggleFlag(board, game);
-            }
+            Random r = new Random();
+            Mine aMine = unflaggedMines.get(r.nextInt(unflaggedMines.size()));
+            aMine.toggleFlag(board, game);
         }
     }
-
-
 }

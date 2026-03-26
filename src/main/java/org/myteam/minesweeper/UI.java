@@ -13,6 +13,11 @@ import javafx.stage.Stage;
 import javafx.scene.layout.GridPane;
 import javafx.scene.input.MouseButton;
 
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Set;
+
 
 public class UI extends Application{
 
@@ -31,6 +36,9 @@ public class UI extends Application{
 
     private GridPane boardG;
 
+    private boolean equationActive = false;
+    private Queue<SpecialEquationTile> pendingEquations = new LinkedList<>();
+    private Set<SpecialEquationTile> handledEquations = new HashSet<>();
 
     @Override
     public void start(Stage primaryStage) {
@@ -73,6 +81,9 @@ public class UI extends Application{
             }
 
             game= new Game(chosenLevel);
+            equationActive = false;
+            pendingEquations.clear();
+            handledEquations.clear();
             gameScene = createGameScene();
             primaryStage.setScene(gameScene);
             updateBoard();
@@ -143,7 +154,11 @@ public class UI extends Application{
         return new Scene(root,900, 700);
     }
 
-    private Scene createEquationScene(){
+    private Scene createEquationScene(SpecialEquationTile s){
+        int eqNum1 = s.getNum1();
+        int eqNum2 = s.getNum2();
+        String equation = s.getEquation();
+
         Label challengeTimer = new Label("Time: 10");
         Label challengeInstructions = new Label("Solve this equation or die");
         Label num1 = new Label("What is " + eqNum1 + " ");
@@ -174,7 +189,8 @@ public class UI extends Application{
                     timeLeft[0]--;
                     challengeTimer.setText("Time: " + timeLeft[0]);
                     if (timeLeft[0] <= 0) {
-                        eqNum1 = 0; eqNum2 = 0; equation = null; // reset so next S tile triggers correctly
+                        equationActive = false;
+                        pendingEquations.clear();
                         game.gameOver();
                         mainStage.setScene(gameScene);
                         instructions.setText("Game over!");
@@ -187,14 +203,22 @@ public class UI extends Application{
         countdown.play();
 
         answer.textProperty().addListener((observable, oldValue, newValue) -> {
+            boolean correct = false;
             if ((equation.equals("sum")) && (newValue.equals("" + sum))) {
-                eqNum1 = 0; eqNum2 = 0; equation = null; // reset so next S tile triggers correctly
-                countdown.stop();
-                mainStage.setScene(gameScene);
+                correct = true;
             } else if ((equation.equals("minus")) && (newValue.equals("" + minus))) {
-                eqNum1 = 0; eqNum2 = 0; equation = null; // reset so next S tile triggers correctly
+                correct = true;
+            }
+            if (correct) {
                 countdown.stop();
-                mainStage.setScene(gameScene);
+                // Process next queued equation, or return to game
+                if (!pendingEquations.isEmpty()) {
+                    SpecialEquationTile next = pendingEquations.poll();
+                    mainStage.setScene(createEquationScene(next));
+                } else {
+                    equationActive = false;
+                    mainStage.setScene(gameScene);
+                }
             }
         });
 
@@ -223,10 +247,6 @@ public class UI extends Application{
         }
     }
 
-    private int eqNum1;
-    private int eqNum2;
-    private String equation;
-
     private void updateBoard(){
         Tile[][] grid= game.getBoard().getGrid();
 
@@ -249,11 +269,14 @@ public class UI extends Application{
                         SpecialEquationTile s = (SpecialEquationTile) tile;
                         aButton.setText("S");
                         aButton.setOnAction(null);
-                        if (eqNum1 == 0 && eqNum2 == 0  && !game.isGameOver()) {
-                            eqNum1 = s.getNum1();
-                            eqNum2 = s.getNum2();
-                            equation = s.getEquation();
-                            mainStage.setScene(createEquationScene());
+                        if (!handledEquations.contains(s) && !game.isGameOver()) {
+                            handledEquations.add(s);
+                            if (!equationActive) {
+                                equationActive = true;
+                                mainStage.setScene(createEquationScene(s));
+                            } else {
+                                pendingEquations.add(s);
+                            }
                         }
                     }
                     else if(tile instanceof RadarTile){
@@ -265,7 +288,7 @@ public class UI extends Application{
                 }
                 else if(tile.isFlagged()){
                     if(game.getFlagsLeft()>=0){
-                        aButton.setText("F");}
+                        aButton.setText("\uD83D\uDEA9");}
                 }
                 else {
                     aButton.setText("");

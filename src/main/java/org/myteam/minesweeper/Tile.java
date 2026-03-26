@@ -13,15 +13,6 @@ public abstract class Tile {
         this.column = c;
     }
 
-    public void toggleFlag() {
-        if (!revealed && !flagged) {
-            flagged = true;
-        }
-        else if (flagged) {
-            flagged = false;
-        }
-    }
-
     public int getRow() {
         return row;
     }
@@ -38,7 +29,7 @@ public abstract class Tile {
         this.column = column;
     }
 
-    public void toggleFlag(Board board, Game game) {  // actual toggleFlag
+    public void toggleFlag(Board board, Game game) {
         if (!revealed && !flagged) {
             if(game.getFlagsLeft()>0){
                 flagged = true;
