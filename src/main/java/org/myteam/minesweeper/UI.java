@@ -39,9 +39,9 @@ public class UI extends Application{
     private static final String UNREVEALED_STYLE =
             "-fx-background-color: #c0c0c0; -fx-border-color: #f0f0f0 #808080 #808080 #f0f0f0; -fx-border-width: 2;";
     private static final String REVEALED_STYLE =
-            "-fx-background-color: #e0e0e0; -fx-border-color: #b0b0b0; -fx-border-width: 1;";
+            "-fx-background-color: #e0e0e0; -fx-border-color: #b0b0b0; -fx-border-width: 1; -fx-opacity: 1.0;";
     private static final String MINE_STYLE =
-            "-fx-background-color: #ff4444; -fx-border-color: #b0b0b0; -fx-border-width: 1;";
+            "-fx-background-color: #ff4444; -fx-border-color: #b0b0b0; -fx-border-width: 1; -fx-opacity: 1.0;";
 
     private boolean equationActive = false;
     private Queue<SpecialEquationTile> pendingEquations = new LinkedList<>();
@@ -103,14 +103,19 @@ public class UI extends Application{
 
     private Scene createGameScene(){
         BorderPane root= new BorderPane();
+        root.setStyle("-fx-background-color: #333;");
 
         timer= new Label("Time: 0");
+        timer.setStyle("-fx-text-fill: white;");
         instructions= new Label("Left click: open   Right click: flag/unflag");
+        instructions.setStyle("-fx-text-fill: white;");
         flags= new Label("Flags left :"+game.getFlagsLeft());
+        flags.setStyle("-fx-text-fill: white;");
 
         Button newGameButton= new Button("New Game");
         HBox topBox= new HBox(20, timer,flags, instructions, newGameButton);
         topBox.setAlignment(Pos.CENTER);
+        topBox.setPadding(new javafx.geometry.Insets(10));
 
         newGameButton.setOnAction(e -> {
             mainStage.setScene(startScene);
@@ -212,11 +217,12 @@ public class UI extends Application{
 
         answer.textProperty().addListener((observable, oldValue, newValue) -> {
             boolean correct = false;
-            if ((equation.equals("sum")) && (newValue.equals("" + sum))) {
+            if (equation.equals("sum") && newValue.equals("" + sum)) {
                 correct = true;
-            } else if ((equation.equals("minus")) && (newValue.equals("" + minus))) {
+            } else if (equation.equals("minus") && newValue.equals("" + minus)) {
                 correct = true;
             }
+
             if (correct) {
                 countdown.stop();
                 // Process next queued equation, or return to game
@@ -278,8 +284,9 @@ public class UI extends Application{
                 Button aButton=theButtons[i][j];
 
                 if(tile.isRevealed()){
+                    aButton.setDisable(true);
                     if(tile instanceof Mine){
-                        aButton.setText("\uD83D\uDCA3");
+                        aButton.setText("M");
                         aButton.setStyle(MINE_STYLE);
                     }
                     else if(tile instanceof NumberTile){
@@ -295,6 +302,7 @@ public class UI extends Application{
                         aButton.setText("S");
                         aButton.setStyle(REVEALED_STYLE + " -fx-text-fill: #ff8800; -fx-font-weight: bold;");
                         aButton.setOnAction(null);
+                        // Only trigger if not already handled
                         if (!handledEquations.contains(s) && !game.isGameOver()) {
                             handledEquations.add(s);
                             if (!equationActive) {
@@ -315,11 +323,13 @@ public class UI extends Application{
                     }
                 }
                 else if(tile.isFlagged()){
+                    aButton.setDisable(false);
                     if(game.getFlagsLeft()>=0){
                         aButton.setText("\uD83D\uDEA9");}
                     aButton.setStyle(UNREVEALED_STYLE);
                 }
                 else {
+                    aButton.setDisable(false);
                     aButton.setText("");
                     aButton.setStyle(UNREVEALED_STYLE);
                 }
