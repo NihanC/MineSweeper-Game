@@ -257,7 +257,7 @@ public class UI extends Application{
 
                 if(tile.isRevealed()){
                     if(tile instanceof Mine){
-                        aButton.setText("M");
+                        aButton.setText("\uD83D\uDCA3");
                     }
                     else if(tile instanceof NumberTile){
                         NumberTile n=(NumberTile) tile;
