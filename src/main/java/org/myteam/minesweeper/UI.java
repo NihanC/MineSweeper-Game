@@ -36,6 +36,13 @@ public class UI extends Application{
 
     private GridPane boardG;
 
+    private static final String UNREVEALED_STYLE =
+            "-fx-background-color: #c0c0c0; -fx-border-color: #f0f0f0 #808080 #808080 #f0f0f0; -fx-border-width: 2;";
+    private static final String REVEALED_STYLE =
+            "-fx-background-color: #e0e0e0; -fx-border-color: #b0b0b0; -fx-border-width: 1;";
+    private static final String MINE_STYLE =
+            "-fx-background-color: #ff4444; -fx-border-color: #b0b0b0; -fx-border-width: 1;";
+
     private boolean equationActive = false;
     private Queue<SpecialEquationTile> pendingEquations = new LinkedList<>();
     private Set<SpecialEquationTile> handledEquations = new HashSet<>();
@@ -126,6 +133,7 @@ public class UI extends Application{
 
                 Button aBut= new Button();
                 aBut.setPrefSize(35,35);
+                aBut.setStyle(UNREVEALED_STYLE);
 
                 aBut.setOnMouseClicked(event ->{
                     Command command;
@@ -247,6 +255,20 @@ public class UI extends Application{
         }
     }
 
+    private String getNumberColor(int value) {
+        switch (value) {
+            case 1: return "#0000FF"; // blue
+            case 2: return "#008000"; // green
+            case 3: return "#FF0000"; // red
+            case 4: return "#000080"; // dark blue
+            case 5: return "#800000"; // maroon
+            case 6: return "#008080"; // teal
+            case 7: return "#000000"; // black
+            case 8: return "#808080"; // grey
+            default: return "#000000";
+        }
+    }
+
     private void updateBoard(){
         Tile[][] grid= game.getBoard().getGrid();
 
@@ -258,16 +280,20 @@ public class UI extends Application{
                 if(tile.isRevealed()){
                     if(tile instanceof Mine){
                         aButton.setText("\uD83D\uDCA3");
+                        aButton.setStyle(MINE_STYLE);
                     }
                     else if(tile instanceof NumberTile){
                         NumberTile n=(NumberTile) tile;
                         aButton.setText(String.valueOf(n.getValue()));
+                        aButton.setStyle(REVEALED_STYLE + " -fx-text-fill: " + getNumberColor(n.getValue()) + "; -fx-font-weight: bold;");
                     } else if (tile instanceof EmptyTile) {
                         aButton.setText("/");
+                        aButton.setStyle(REVEALED_STYLE);
                     }
                     else if(tile instanceof SpecialEquationTile){
                         SpecialEquationTile s = (SpecialEquationTile) tile;
                         aButton.setText("S");
+                        aButton.setStyle(REVEALED_STYLE + " -fx-text-fill: #ff8800; -fx-font-weight: bold;");
                         aButton.setOnAction(null);
                         if (!handledEquations.contains(s) && !game.isGameOver()) {
                             handledEquations.add(s);
@@ -281,17 +307,21 @@ public class UI extends Application{
                     }
                     else if(tile instanceof RadarTile){
                         aButton.setText("R");
+                        aButton.setStyle(REVEALED_STYLE + " -fx-text-fill: #9900cc; -fx-font-weight: bold;");
                     }
                     else{
                         aButton.setText("");
+                        aButton.setStyle(REVEALED_STYLE);
                     }
                 }
                 else if(tile.isFlagged()){
                     if(game.getFlagsLeft()>=0){
                         aButton.setText("\uD83D\uDEA9");}
+                    aButton.setStyle(UNREVEALED_STYLE);
                 }
                 else {
                     aButton.setText("");
+                    aButton.setStyle(UNREVEALED_STYLE);
                 }
             }
         }
